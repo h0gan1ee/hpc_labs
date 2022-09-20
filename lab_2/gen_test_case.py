@@ -17,14 +17,14 @@ for num in arr:
 print(b)
 print(c)
 
-arr = np.random.default_rng().uniform(low=0.0, high=100.0, size=a*c)
+arr = np.random.default_rng().uniform(low=0.0, high=100.0, size=b*c)
 
 for num in arr:
     print(np.around(num, 6))
 
 a = 100
-b = 150
-c = 300
+b = 200
+c = 400
 
 print(a)
 print(b)
@@ -37,13 +37,13 @@ for num in arr:
 print(b)
 print(c)
 
-arr = np.random.default_rng().uniform(low=0.0, high=500.0, size=a*c)
+arr = np.random.default_rng().uniform(low=0.0, high=500.0, size=b*c)
 
 for num in arr:
     print(np.around(num, 6))
 
 a = 1000
-b = 800
+b = 100
 c = 1000
 
 print(a)
@@ -57,7 +57,9 @@ for num in arr:
 print(b)
 print(c)
 
-arr = np.random.default_rng().uniform(low=0.0, high=2000.0, size=a*c)
+arr = np.random.default_rng().uniform(low=0.0, high=2000.0, size=b*c+100)
 
 for num in arr:
     print(np.around(num, 6))
+
+print()
