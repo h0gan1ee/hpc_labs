@@ -1,10 +1,10 @@
 OBLAS_DIR ?= /opt/homebrew/Cellar/openblas/0.3.21
 TARGET_DIR ?= ./target
-CC ?= clang
 MAIN ?= ./src/main.c
 CXXFLAGS ?= -Wall -Ofast -mcpu=apple-m1
+CC := clang
 
-all: build-user build-oblas run
+all: build-user build-oblas build-ablas run
 
 debug: build-dbg run
 
@@ -20,8 +20,11 @@ build-user: pre
 build-oblas: pre
 	$(CC) $(MAIN) $(CXXFLAGS) -I $(OBLAS_DIR)/include -L $(OBLAS_DIR)/lib -lopenblas -DOBLAS -o $(TARGET_DIR)/bin_oblas
 
-run: $(TARGET_DIR)/*
-	@for file in $^; do \
+build-ablas: pre
+	$(CC) $(MAIN) $(CXXFLAGS) -framework Accelerate -DABLAS -o $(TARGET_DIR)/bin_ablas
+
+run:
+	@for file in $(TARGET_DIR)/*; do \
 	    printf "\n[PROGRAM $${file} START]\n"; \
 	    time $${file}; \
 	done

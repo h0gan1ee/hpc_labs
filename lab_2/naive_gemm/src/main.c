@@ -7,6 +7,10 @@
 #include <cblas.h>
 #endif
 
+#ifdef ABLAS
+#include <Accelerate/Accelerate.h>
+#endif
+
 #define N 114514
 
 struct timeval;
@@ -52,7 +56,7 @@ int main()
     while (kase--)
     {
         Matrix m1, m2, m3;
-        scanf("%d %d", &(m1.row), &(m1.col));
+        scanf("%d%d", &(m1.row), &(m1.col));
         int size1 = m1.row * m1.col;
         m1.val = (double *)malloc(size1 * sizeof(double));
         for (int i = 0; i < size1; ++i)
@@ -70,7 +74,7 @@ int main()
         m3.row = m1.row, m3.col = m2.col;
         int size3 = m3.row * m3.col;
         m3.val = (double *)malloc(size3 * sizeof(double));
-        memset(m3.val, 0, sizeof(double) * size3);
+        memset(m3.val, 0, size3 * sizeof(double));
 
         unsigned long time_start, time_end;
         time_start = get_time();
@@ -79,7 +83,7 @@ int main()
 #ifdef USER
             gemm(&m1, &m2, &m3);
 #endif
-#ifdef OBLAS
+#if defined(OBLAS) || defined(ABLAS)
             cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, m1.row, m2.col, m1.col, 1, m1.val, size1, m2.val, size2, 1, m3.val, size3);
 #endif
         }
@@ -98,6 +102,10 @@ int main()
 #endif
 
         printf("\n[DURATION] %lu us\n", time_end - time_start);
+
+        free(m1.val);
+        free(m2.val);
+        free(m3.val);
     }
     return 0;
 }
