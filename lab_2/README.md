@@ -11,7 +11,7 @@ C benchmark include a naive algorithm, OpenBLAS and Apple's implementation of BL
 
 You might need to modify `./gemm_c/Makefile` to set the path of OpenBLAS, targetting platform and so on (especially when not on a Mac with M1 chip). The `Makefile` is pretty self-explained so I won't go into details here.
 
-A possible output (us is a shorthand of micro second):
+A possible output (us is a shorthand of microsecond):
 
 ```
 [PROGRAM ./target/bin_ablas START]
