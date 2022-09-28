@@ -4,6 +4,8 @@ MAIN ?= ./src/main.c
 CXXFLAGS ?= -Wall -Ofast -mcpu=apple-m1
 CC := clang
 
+.PHONY: all debug pre build* run clean
+
 all: build-user build-oblas build-ablas run
 
 debug: build-dbg run
@@ -23,11 +25,14 @@ build-oblas: pre
 build-ablas: pre
 	$(CC) $(MAIN) $(CXXFLAGS) -framework Accelerate -DABLAS -o $(TARGET_DIR)/bin_ablas
 
-run:
+run: test_case.in.txt
 	@for file in $(TARGET_DIR)/*; do \
 	    printf "\n[PROGRAM $${file} START]\n"; \
 	    time $${file}; \
 	done
+
+test_case.in.txt:
+	python3 gen_test_case.py > test_case.in.txt
 
 clean:
 	rm -r ./target/**

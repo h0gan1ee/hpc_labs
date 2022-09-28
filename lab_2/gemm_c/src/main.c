@@ -49,7 +49,7 @@ void dgemm(Matrix *m1, Matrix *m2, Matrix *m3)
 
 int main()
 {
-    freopen("../test_case.in.txt", "r", stdin);
+    freopen("./test_case.in.txt", "r", stdin);
     int kase;
     scanf("%d", &kase);
 #ifdef DBG
