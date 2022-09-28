@@ -24,7 +24,7 @@ Unfortunately, as for the multi-threaded version, if you terminate the process u
 
 ## Test
 
-Currently, both single-threaded and multi-threaded versions functions normally.
+Currently, both single-threaded and multi-threaded versions function normally.
 
 To test the server, run the program and test with curl using following command:
 
