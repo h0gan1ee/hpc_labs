@@ -45,6 +45,7 @@ int main()
 
     while (1)
     {
+        printf("[INFO] http://localhost:%d\n\n", PORT);
 #ifdef MULTI
         printf("===== multiple processes waiting for client's request =====\n");
 #else
