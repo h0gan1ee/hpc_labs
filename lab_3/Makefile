@@ -1,7 +1,7 @@
 SERVER_BIN ?= socket_server_demo
 SRC_DIR ?= ./src
 TARGET_DIR ?= ./target
-CXXFLAGS ?= -Wall -O2
+CXXFLAGS ?= -Wall -Ofast
 CC := clang
 FLAG ?=
 

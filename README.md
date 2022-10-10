@@ -15,4 +15,10 @@
 ## Lab 3
 
 - All: Finished
-    - Multi-threaded server: Finished
+    - Multi-process server: Finished
+
+## Lab 4
+
+- All: WIP
+    - Multi-thread GEMM: Finished
+    - Multi-thread server: **Pending**
