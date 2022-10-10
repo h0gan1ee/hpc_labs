@@ -41,7 +41,7 @@ void dgemm(Matrix *m1, Matrix *m2, Matrix *m3)
         {
             for (int j = 0; j < n; ++j)
             {
-                m3->val[i * n + j] += m1->val[i * m + kk] * m2->val[kk * n + j];
+                m3->val[i * n + j] += m1->val[i * k + kk] * m2->val[kk * n + j];
             }
         }
     }
