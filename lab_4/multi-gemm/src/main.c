@@ -192,7 +192,7 @@ int main()
 #ifdef MULTI
             dgemm_multi(&m1, &m2, &m3);
 #endif
-#if ABLAS
+#ifdef ABLAS
             cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, m1.row, m2.col, m1.col, 1, m1.val, m1.col, m2.val, m2.col, 1, m3.val, m3.col);
 #endif
         }
