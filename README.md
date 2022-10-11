@@ -19,6 +19,6 @@
 
 ## Lab 4
 
-- All: WIP
+- All: Finished
     - Multi-thread GEMM: Finished
-    - Multi-thread server: **Pending**
+    - Multi-thread server: Finished

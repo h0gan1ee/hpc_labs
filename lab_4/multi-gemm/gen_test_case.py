@@ -2,9 +2,9 @@ import numpy as np
 
 print(3)
 
-a = 3
+a = 10
 b = 4
-c = 5
+c = 8
 
 print(a)
 print(b)
@@ -22,9 +22,9 @@ arr = np.random.default_rng().uniform(low=0.0, high=100.0, size=b*c)
 for num in arr:
     print(np.around(num, 6))
 
-a = 10
-b = 20
-c = 40
+a = 100
+b = 200
+c = 400
 
 print(a)
 print(b)
@@ -42,9 +42,9 @@ arr = np.random.default_rng().uniform(low=0.0, high=500.0, size=b*c)
 for num in arr:
     print(np.around(num, 6))
 
-a = 30
-b = 10
-c = 30
+a = 600
+b = 60
+c = 600
 
 print(a)
 print(b)

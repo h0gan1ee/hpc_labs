@@ -16,38 +16,38 @@ A possible output (us is a shorthand of microsecond):
 ```
 [PROGRAM ./target/bin_ablas START]
 
-[DURATION] 564 us
+[DURATION] 382 us
 
-[DURATION] 3441 us
+[DURATION] 3421 us
 
-[DURATION] 48524 us
+[DURATION] 45666 us
 
-real    0m0.127s
-user    0m0.121s
+real    0m0.160s
+user    0m0.112s
 sys     0m0.004s
 
 [PROGRAM ./target/bin_oblas START]
 
-[DURATION] 614 us
+[DURATION] 395 us
 
-[DURATION] 26438 us
+[DURATION] 25405 us
 
-[DURATION] 330504 us
+[DURATION] 290245 us
 
-real    0m0.510s
-user    0m2.576s
-sys     0m0.040s
+real    0m0.544s
+user    0m2.728s
+sys     0m0.032s
 
 [PROGRAM ./target/bin_user START]
 
-[DURATION] 589 us
+[DURATION] 548 us
 
-[DURATION] 105434 us
+[DURATION] 96280 us
 
-[DURATION] 1126105 us
+[DURATION] 1127444 us
 
-real    0m1.611s
-user    0m1.600s
+real    0m1.640s
+user    0m1.580s
 sys     0m0.008s
 ```
 

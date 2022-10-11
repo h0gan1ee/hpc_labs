@@ -9,8 +9,8 @@
 #endif
 
 #define WARM_UP 11
-#define N 45
-#define MAX_TRDS 128
+#define N 30
+#define CHUNK_SIZE 9000
 
 struct timeval;
 struct timezone;
@@ -47,20 +47,29 @@ void dgemm(Matrix *m1, Matrix *m2, Matrix *m3)
 
 typedef struct
 {
-    double *mat1, *mat2;
-    int ii, jj, kk, m2;
-    double *ret;
-} dgemm_dot_prod_args;
+    int s, e;
+} dgemm_partial_args;
 
-void dgemm_dot_prod(dgemm_dot_prod_args *args)
+Matrix *g_m1, *g_m2, *g_m3;
+
+void dgemm_partial(dgemm_partial_args *args)
 {
 #ifdef DBG
-    printf("\n[ARGS] ii: %d, jj: %d, kk: %d, m2: %d\n", args->ii, args->jj, args->kk, args->m2);
+    printf("\n[ARGS] s: %d, e: %d\n", args->s, args->e);
 #endif
 
-    for (int k = 0; k < args->kk; ++k)
+    int cur = args->s, k = g_m1->col, cc = g_m3->col;
+
+    while (cur < args->e)
     {
-        *(args->ret) += args->mat1[args->ii * args->kk + k] * args->mat2[k * args->m2 + args->jj];
+        int r = cur / g_m3->col, c = cur % g_m3->col;
+        int cur1 = r * k, cur2 = c;
+        for (int kk = 0; kk < k; ++kk)
+        {
+            g_m3->val[cur] += g_m1->val[cur1] * g_m2->val[cur2];
+            ++cur1, cur2 += cc;
+        }
+        ++cur;
     }
 
     free(args);
@@ -68,31 +77,26 @@ void dgemm_dot_prod(dgemm_dot_prod_args *args)
 
 void dgemm_multi(Matrix *m1, Matrix *m2, Matrix *m3)
 {
-    int m = m1->row, n = m2->col, k = m1->col, cnt = 0;
+    g_m1 = m1, g_m2 = m2, g_m3 = m3;
+    int size3 = m3->row * m3->col;
 
-    pthread_t thrds[m * n];
+    int thrd_size = size3 / CHUNK_SIZE + (size3 % CHUNK_SIZE ? 1 : 0);
+    pthread_t thrds[thrd_size];
 
-    for (int i = 0; i < m; ++i)
+    for (int i = 0, cnt = 0; i < size3; i += CHUNK_SIZE, ++cnt)
     {
-        for (int j = 0; j < n; ++j)
+        int j = i + CHUNK_SIZE;
+        if (j > size3)
         {
-            dgemm_dot_prod_args *args = (dgemm_dot_prod_args *)malloc(sizeof(dgemm_dot_prod_args));
-            *args = (dgemm_dot_prod_args){m1->val, m2->val, i, j, k, n, &(m3->val[i * n + j])};
-            pthread_create(&thrds[cnt], NULL, (void *)dgemm_dot_prod, args);
-
-            ++cnt;
-            if (cnt >= MAX_TRDS)
-            {
-                for (int i = 0; i < cnt; ++i)
-                {
-                    pthread_join(thrds[i], NULL);
-                }
-                cnt = 0;
-            }
+            j = size3;
         }
+
+        dgemm_partial_args *args = (dgemm_partial_args *)malloc(sizeof(dgemm_partial_args));
+        *args = (dgemm_partial_args){i, j};
+        pthread_create(&thrds[cnt], NULL, (void *)dgemm_partial, args);
     }
 
-    for (int i = 0; i < cnt; ++i)
+    for (int i = 0; i < thrd_size; ++i)
     {
         pthread_join(thrds[i], NULL);
     }
