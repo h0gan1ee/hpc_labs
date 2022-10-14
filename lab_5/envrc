@@ -1,0 +1,4 @@
+export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+export DYLD_LIBRARY_PATH="/opt/homebrew/opt/libomp/lib:$DYLD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="/opt/homebrew/opt/libomp/lib:$LD_LIBRARY_PATH"
+export OMP_NUM_THREADS=32
