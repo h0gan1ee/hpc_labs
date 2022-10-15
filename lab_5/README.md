@@ -4,7 +4,7 @@
 
 Similar to Lab 2.
 
-# Set up on macOS
+## Set up on macOS
 
 ```bash
 brew install llvm libomp
@@ -69,6 +69,6 @@ user    0m1.148s
 sys     0m0.007s
 ```
 
-The barplot of above results:
+The plot of above results:
 
-![Benchmark Barplot](assets/benchmark_barplot.png)
+![Benchmark Barplot](assets/benchmark_plot.png)
