@@ -71,4 +71,4 @@ sys     0m0.007s
 
 The plot of above results:
 
-![Benchmark Barplot](assets/benchmark_plot.png)
+![Benchmark Barplot](assets/benchmark_plot.svg)
