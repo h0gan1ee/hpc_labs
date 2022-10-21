@@ -14,12 +14,8 @@
 #endif
 
 #define WARM_UP 8
-#define N 8
+#define N 16
 #define THREAD_NUM 4
-
-#ifdef MPI
-unsigned long acc_extra_time;
-#endif
 
 struct timeval;
 struct timezone;
@@ -174,12 +170,18 @@ void dgemm_mpi(Matrix *m1, Matrix *m2, Matrix *m3, int world_size)
 
     int args[] = {m3->row, m3->col, m1->col};
 
-    unsigned long extra_time_start = get_time();
+    double m2_trans_val = malloc(size2 * sizeof(double));
+    for (int i = 0; i < m2->row; ++i)
+    {
+        for (int j = 0; j < m2->col; ++j)
+        {
+            m2_trans_val[j * m2->col + i] = m2->val[i * m2->col + j];
+        }
+    }
+
     MPI_Bcast(args, 3, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(m1->val, size1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-    MPI_Bcast(m2->val, size2, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-    unsigned long extra_time_end = get_time();
-    acc_extra_time += extra_time_start - extra_time_end;
+    // MPI_Bcast(m1->val, size1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    // MPI_Bcast(m2->val, size2, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     int i, cnt;
     for (i = 0, cnt = 1; cnt < world_size; i += row_size, ++cnt)
@@ -187,10 +189,10 @@ void dgemm_mpi(Matrix *m1, Matrix *m2, Matrix *m3, int world_size)
         int j = i + row_size;
         int args[] = {i, j};
         MPI_Send(args, 2, MPI_INT, cnt, JOB_TAG, MPI_COMM_WORLD);
+        MPI_Send(&(m1->val[i * m1.col]), (j - i) * m1.col, MPI_DOUBLE, cnt, )
     }
     dgemm_partial(m1, m2, m3, i, m3->row);
 
-    unsigned long time_start = get_time();
     for (i = 1; i < world_size; ++i)
     {
         int len;
@@ -201,13 +203,8 @@ void dgemm_mpi(Matrix *m1, Matrix *m2, Matrix *m3, int world_size)
         MPI_Recv(buf, len, MPI_DOUBLE, MPI_ANY_SOURCE, RESULT_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
         int start_index = (int)buf[0];
-        for (int j = 0; j < len - 1; ++j)
-        {
-            m3->val[start_index + j] = buf[j + 1];
-        }
+        memcpy(&(m3->val[start_index]), &buf[1], (len - 1) * sizeof(double));
     }
-    unsigned long time_end = get_time();
-    acc_extra_time += time_start - time_end;
 }
 #endif
 
@@ -350,7 +347,6 @@ int main()
 #endif
         }
 
-        acc_extra_time = 0;
         unsigned long time_start, time_end;
         time_start = get_time();
         for (int i = 0; i < N; ++i)
@@ -374,7 +370,6 @@ int main()
         time_end = get_time();
 
         printf("\n[DURATION] %lu us\n", time_end - time_start);
-        printf("\n[EXTRA TIME] %lu us\n", acc_extra_time);
 
         free(m1.val);
         free(m2.val);
