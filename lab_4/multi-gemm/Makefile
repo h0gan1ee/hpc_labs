@@ -1,7 +1,7 @@
 OBLAS_DIR ?= /opt/homebrew/Cellar/openblas/0.3.21
 TARGET_DIR ?= ./target
 MAIN ?= ./src/main.c
-CXXFLAGS ?= -Wall -Wextra -Ofast -mcpu=apple-m1
+CXXFLAGS ?= -Wall -Wextra -O0 -mcpu=apple-m1
 CC := clang
 
 .PHONY: all debug pre build* run clean
@@ -20,7 +20,7 @@ build-user: pre
 	$(CC) $(MAIN) $(CXXFLAGS) -DUSER -o $(TARGET_DIR)/bin_user
 
 build-multi: pre
-	$(CC) $(MAIN) $(CXXFLAGS) -pthread -DMULTI -o $(TARGET_DIR)/bin_multi
+	$(CC) $(MAIN) $(CXXFLAGS) -g -pthread -DMULTI -o $(TARGET_DIR)/bin_multi
 
 build-ablas: pre
 	$(CC) $(MAIN) $(CXXFLAGS) -framework Accelerate -DABLAS -o $(TARGET_DIR)/bin_ablas

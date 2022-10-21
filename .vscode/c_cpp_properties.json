@@ -4,9 +4,18 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/opt/homebrew/opt/libomp/include"
+                "/opt/homebrew/opt/libomp/include",
+                "/opt/homebrew/include",
+                "/Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk/System/Library/Frameworks/Accelerate.framework/Versions/A/Headers"
             ],
-            "defines": [],
+            "defines": [
+                "MPI",
+                "ABLAS",
+                "USER",
+                "DBG",
+                "OMP",
+                "MULTI"
+            ],
             "macFrameworkPath": [
                 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks"
             ],

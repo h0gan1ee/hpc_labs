@@ -8,9 +8,9 @@
 #include <Accelerate/Accelerate.h>
 #endif
 
-#define WARM_UP 11
-#define N 30
-#define CHUNK_SIZE 9000
+#define WARM_UP 1
+#define N 1
+#define THREAD_NUM 8
 
 struct timeval;
 struct timezone;
@@ -80,21 +80,22 @@ void dgemm_multi(Matrix *m1, Matrix *m2, Matrix *m3)
     g_m1 = m1, g_m2 = m2, g_m3 = m3;
     int size3 = m3->row * m3->col;
 
-    int thrd_size = size3 / CHUNK_SIZE + (size3 % CHUNK_SIZE ? 1 : 0);
+    int thrd_size = THREAD_NUM;
+    int chunk_size = size3 / THREAD_NUM;
     pthread_t thrds[thrd_size];
 
-    for (int i = 0, cnt = 0; i < size3; i += CHUNK_SIZE, ++cnt)
+    int i, cnt;
+    for (i = 0, cnt = 0; cnt < thrd_size - 1; i += chunk_size, ++cnt)
     {
-        int j = i + CHUNK_SIZE;
-        if (j > size3)
-        {
-            j = size3;
-        }
+        int j = i + chunk_size;
 
         dgemm_partial_args *args = (dgemm_partial_args *)malloc(sizeof(dgemm_partial_args));
         *args = (dgemm_partial_args){i, j};
         pthread_create(&thrds[cnt], NULL, (void *)dgemm_partial, args);
     }
+    dgemm_partial_args *args = (dgemm_partial_args *)malloc(sizeof(dgemm_partial_args));
+    *args = (dgemm_partial_args){i, size3};
+    pthread_create(&thrds[cnt], NULL, (void *)dgemm_partial, args);
 
     for (int i = 0; i < thrd_size; ++i)
     {

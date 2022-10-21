@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "mpi.h": "c",
+        "pthread.h": "c",
+        "time.h": "c",
+        "string.h": "c",
+        "accelerate.h": "c",
+        "stdlib.h": "c"
+    }
+}
