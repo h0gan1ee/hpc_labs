@@ -15,10 +15,28 @@
 ## Lab 3
 
 - All: Finished
-    - Multi-process server: Finished
+    - Multiprocess server: Finished
 
 ## Lab 4
 
 - All: Finished
-    - Multi-thread GEMM: Finished
-    - Multi-thread server: Finished
+    - Multithread GEMM: Finished
+    - Multithread server: Finished
+
+## Lab 5
+
+- All: Finished
+    - OpenMP GEMM: Finished
+    - Benchmark: Finished
+
+## Lab 6
+
+- All: Finished
+    - MPI GEMM: Finished
+    - Benchmark: Finished
+
+## Lab 7
+
+- All: Pending
+    - Duo computers GEMM: **Pending**
+    - Native multiprocess GEMM: **Pending**
