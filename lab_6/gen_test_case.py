@@ -1,6 +1,6 @@
 import numpy as np
 
-print(1)
+print(6)
 
 def print_samples(a, b, c):
     print(a)
@@ -19,11 +19,11 @@ def print_samples(a, b, c):
     for num in arr:
         print(np.around(num, 6))
 
-# print_samples(8, 8, 8)
-# print_samples(64, 64, 64)
-# print_samples(128, 128, 128)
-# print_samples(256, 256, 256)
-# print_samples(512, 512, 512)
+print_samples(8, 8, 8)
+print_samples(64, 64, 64)
+print_samples(128, 128, 128)
+print_samples(256, 256, 256)
+print_samples(512, 512, 512)
 print_samples(1024, 1024, 1024)
 
 print()

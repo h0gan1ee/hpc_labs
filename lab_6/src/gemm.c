@@ -111,6 +111,7 @@ void dgemm_omp(Matrix *m1, Matrix *m2, Matrix *m3)
 }
 
 #ifdef MPI
+
 enum COMM_TAG
 {
     JOB_TAG = 0,
@@ -128,33 +129,34 @@ void gemm_mpi_worker()
     Matrix m1, m2;
     int args[3];
     MPI_Bcast(args, 3, MPI_INT, 0, MPI_COMM_WORLD);
-    m1.row = args[0], m2.col = args[1], m1.col = m2.row = args[2];
-    int size1 = m1.row * m1.col, size2 = m2.row * m2.col;
-    m1.val = (double *)malloc(size1 * sizeof(double)), m2.val = (double *)malloc(size2 * sizeof(double));
-    MPI_Bcast(m1.val, size1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    m2.col = args[1], m1.col = m2.row = args[2];
+    int size2 = m2.row * m2.col;
+    m2.val = (double *)malloc(size2 * sizeof(double));
+    // MPI_Bcast(m1.val, size1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     MPI_Bcast(m2.val, size2, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     MPI_Recv(args, 2, MPI_INT, 0, JOB_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     int row_s = args[0], row_e = args[1];
+    m1.row = row_e - row_s;
+    int size1 = m1.row * m1.col;
+    m1.val = (double *)malloc(size1 * sizeof(double));
+    MPI_Recv(m1.val, size1, MPI_DOUBLE, 0, JOB_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
 #ifdef DBG
     printf("\n[ARGS] s: %d, e: %d\n", row_s, row_e);
 #endif
 
-    int n = m2.col, k = m1.col;
-
     int buf_len = (row_e - row_s) * m2.col + 1;
     double *buf = (double *)malloc(buf_len * sizeof(double));
     memset(buf, 0, buf_len * sizeof(double));
-    buf[0] = row_s * n;
-    int offset = -row_s * n + 1;
+    buf[0] = row_s * m2.col;
 
-    for (int i = row_s; i < row_e; ++i)
+    for (int i = 0; i < m1.row; ++i)
     {
-        for (int kk = 0; kk < k; ++kk)
+        for (int k = 0; k < m1.col; ++k)
         {
-            for (int j = 0; j < n; ++j)
+            for (int j = 0; j < m2.col; ++j)
             {
-                buf[i * n + j + offset] += m1.val[i * k + kk] * m2.val[kk * n + j];
+                buf[i * m2.col + j + 1] += m1.val[i * m1.col + k] * m2.val[k * m2.col + j];
             }
         }
     }
@@ -166,22 +168,13 @@ void gemm_mpi_worker()
 void dgemm_mpi(Matrix *m1, Matrix *m2, Matrix *m3, int world_size)
 {
     int row_size = m3->row / world_size;
-    int size1 = m1->row * m1->col, size2 = m2->row * m2->col;
+    int size2 = m2->row * m2->col;
 
     int args[] = {m3->row, m3->col, m1->col};
 
-    double m2_trans_val = malloc(size2 * sizeof(double));
-    for (int i = 0; i < m2->row; ++i)
-    {
-        for (int j = 0; j < m2->col; ++j)
-        {
-            m2_trans_val[j * m2->col + i] = m2->val[i * m2->col + j];
-        }
-    }
-
     MPI_Bcast(args, 3, MPI_INT, 0, MPI_COMM_WORLD);
     // MPI_Bcast(m1->val, size1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-    // MPI_Bcast(m2->val, size2, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(m2->val, size2, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     int i, cnt;
     for (i = 0, cnt = 1; cnt < world_size; i += row_size, ++cnt)
@@ -189,7 +182,7 @@ void dgemm_mpi(Matrix *m1, Matrix *m2, Matrix *m3, int world_size)
         int j = i + row_size;
         int args[] = {i, j};
         MPI_Send(args, 2, MPI_INT, cnt, JOB_TAG, MPI_COMM_WORLD);
-        MPI_Send(&(m1->val[i * m1.col]), (j - i) * m1.col, MPI_DOUBLE, cnt, )
+        MPI_Send(&(m1->val[i * m1->col]), (j - i) * m1->col, MPI_DOUBLE, cnt, JOB_TAG, MPI_COMM_WORLD);
     }
     dgemm_partial(m1, m2, m3, i, m3->row);
 
@@ -206,6 +199,7 @@ void dgemm_mpi(Matrix *m1, Matrix *m2, Matrix *m3, int world_size)
         memcpy(&(m3->val[start_index]), &buf[1], (len - 1) * sizeof(double));
     }
 }
+
 #endif
 
 void dgemm(Matrix *m1, Matrix *m2, Matrix *m3)
