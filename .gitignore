@@ -1,3 +1,5 @@
 *.in.txt
 .DS_Store
 **/target/*
+*.dSYM/
+*.trace/

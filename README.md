@@ -6,11 +6,11 @@
 
 ## Lab 2
 
-- All: WIP
+- All: Finished
     - Bootstrap: Finished
     - User algorithm: Finished
     - Benchmark: Finished
-    - ASC22 exercise 1: **Pending**
+    - ASC22 exercise 1: Finished
 
 ## Lab 3
 
@@ -37,6 +37,10 @@
 
 ## Lab 7
 
-- All: Pending
-    - Duo computers GEMM: **Pending**
-    - Native multiprocess GEMM: **Pending**
+- All: Finished
+    - SLIC optimization: Finished
+
+## Lab 8
+
+- All: Finished
+    - HPL benchmark: Finished

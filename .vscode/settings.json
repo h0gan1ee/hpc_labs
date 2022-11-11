@@ -5,6 +5,9 @@
         "time.h": "c",
         "string.h": "c",
         "accelerate.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "cfloat": "cpp",
+        "chrono": "cpp",
+        "iostream": "cpp"
     }
 }
